@@ -1,7 +1,7 @@
 # Competitive Analysis & Journey Map (Module 2)
 
 ## Responses
-- **Role, who are you solving for? (the specific user segment or profile):** A longtime StreamLine subscriber who opens the app most evenings.
+- **Role, who are you solving for? (the specific user segment or profile):** A StreamLine subscriber who opens the app then, browses and can't find anything to watch.
 - **Goal, what is this user ultimately trying to achieve?:** Find a movie she’s excited to watch tonight without spending 20 minutes scrolling.
 - **Friction, the main barrier (moment of misery) stopping them from succeeding:** None of the recommendations stand out. After 20 minutes of scrolling, she closes the app and puts on a DVD.
 - **External tools, the outside platforms or tools the user is forced to use:** Her own DVD collection.
