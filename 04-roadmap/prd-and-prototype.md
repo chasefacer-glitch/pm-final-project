@@ -57,4 +57,6 @@ Instead of spending 20 minutes scrolling through endless recommendations, users 
 ---
 **Builder hook:** Build a working prototype based on this PRD. Use the User Story as the core flow, Functional Requirements as build constraints, and prioritize speed and clarity over visual complexity.
 
-**Prototype:** https://claude.ai/artifact/K2DH9wd585vbdApY2DQ5uE
+**Prototype:**
+- Claude: https://claude.ai/artifact/K2DH9wd585vbdApY2DQ5uE
+- Lovable: https://scenario-to-spark.lovable.app
