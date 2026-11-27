@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StreamLine Spotlight · Roadmap</title>
+<style>
+  :root{
+    --bg:#0f1117; --panel:#171a23; --card:#1f2330; --line:#2a2f3d;
+    --text:#e8eaf0; --muted:#9097a8; --accent:#ffb547;
+    --qw:#3ecf8e; --bb:#5b8cff; --fi:#b28cff; --mp:#ff6b6b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45;padding:40px 32px 64px}
+  .wrap{max-width:1240px;margin:0 auto}
+
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:30px;font-weight:700;letter-spacing:-.01em;margin-top:6px}
+  .meta{color:var(--muted);font-size:14px;margin-top:4px}
+
+  .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .chip{border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:13px;padding:7px 12px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:border-color .15s,opacity .15s}
+  .chip:hover{border-color:#444b5c}
+  .chip.off{opacity:.35}
+  .chip .dot{width:8px;height:8px;border-radius:50%}
+  .reset{color:var(--muted)}
+
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .lane{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-height:220px;display:flex;flex-direction:column;transition:border-color .15s,background .15s}
+  .lane.over{border-color:var(--accent);background:#1b1f2a}
+  .lane-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .lane-title{font-size:15px;font-weight:700;letter-spacing:.06em}
+  .count{font-size:12px;color:var(--muted);background:var(--card);padding:2px 8px;border-radius:999px}
+  .lane-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .lane[data-lane="now"] .lane-title{color:var(--accent)}
+  .cards{display:flex;flex-direction:column;gap:10px;flex:1}
+
+  .card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--q);border-radius:10px;padding:13px 14px;cursor:grab;transition:transform .12s,box-shadow .12s}
+  .card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  .card.dragging{opacity:.4}
+  .card.hidden{display:none}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+  .id{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em}
+  .name{font-size:14.5px;font-weight:600;margin-top:1px}
+  .why{font-size:13px;color:#c3c8d4}
+  .badge{flex-shrink:0;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;color:var(--q);background:color-mix(in srgb,var(--q) 16%,transparent);white-space:nowrap}
+  .empty{font-size:12.5px;color:#5d6475;text-align:center;padding:18px 0;border:1px dashed var(--line);border-radius:10px}
+
+  .cut{margin-top:16px;background:transparent;border:1px dashed #3a3f4e;min-height:auto}
+  .cut .lane-title{color:var(--mp)}
+  .cut .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .cut .card{opacity:.78}
+  .cut .card .name{text-decoration:line-through;text-decoration-color:rgba(255,107,107,.55)}
+
+  .legend{margin-top:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .legend div{font-size:12px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .legend b{display:block;font-size:12.5px;margin-bottom:2px}
+  .hint{font-size:12px;color:#5d6475;margin-top:14px;text-align:center}
+
+  @media (max-width:900px){
+    .board,.cut .cards,.legend{grid-template-columns:1fr}
+    body{padding:24px 16px}
+  }
+  @media print{
+    body{background:#fff;color:#111}
+    .controls,.hint{display:none}
+    .lane,.card,.legend div{background:#fff;border-color:#ddd}
+    .why,.meta,.lane-sub{color:#444}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Product Roadmap</div>
+      <h1>StreamLine Spotlight</h1>
+      <div class="meta">Team: 2 engineers + 1 designer · Goal: reduce discovery friction</div>
+    </div>
+    <div class="controls" id="filters"></div>
+  </header>
+
+  <section class="board">
+    <div class="lane" data-lane="now">
+      <div class="lane-head"><span class="lane-title">NOW</span><span class="count"></span></div>
+      <div class="lane-sub">3-week sprint</div>
+      <div class="cards"></div>
+    </div>
+    <div class="lane" data-lane="next">
+      <div class="lane-head"><span class="lane-title">NEXT</span><span class="count"></span></div>
+      <div class="lane-sub">Following 1–2 sprints</div>
+      <div class="cards"></div>
+    </div>
+    <div class="lane" data-lane="later">
+      <div class="lane-head"><span class="lane-title">LATER</span><span class="count"></span></div>
+      <div class="lane-sub">Backlog</div>
+      <div class="cards"></div>
+    </div>
+  </section>
+
+  <section class="lane cut" data-lane="cut">
+    <div class="lane-head"><span class="lane-title">CUT LIST</span><span class="count"></span></div>
+    <div class="lane-sub">Deliberately out of scope</div>
+    <div class="cards"></div>
+  </section>
+
+  <section class="legend" id="legend"></section>
+  <p class="hint">Drag cards between lanes to explore trade-offs · Click a quadrant to filter · Reset restores the plan</p>
+</div>
+
+<script>
+  // Quadrant = Impact × Effort. Edit here to reclassify.
+  const QUADRANTS = {
+    qw: { label: "Quick Win", color: "var(--qw)", desc: "High impact · Low effort" },
+    bb: { label: "Big Bet",   color: "var(--bb)", desc: "High impact · High effort" },
+    fi: { label: "Fill-In",   color: "var(--fi)", desc: "Low impact · Low effort" },
+    mp: { label: "Money Pit", color: "var(--mp)", desc: "Low impact · High effort" }
+  };
+
+  const FEATURES = [
+    { id:"A1",  name:"Spotlight Curated Rail",          why:"Reduces choice overload through human-led curation.",            q:"bb", lane:"now" },
+    { id:"A2",  name:"'Why You'll Love This' Label",    why:"Helps users make faster, more confident decisions.",             q:"qw", lane:"now" },
+    { id:"A4",  name:"Mood-Based Entry Point",          why:"Matches how users choose movies based on mood.",                  q:"qw", lane:"now" },
+    { id:"A3",  name:"Hidden Gem Badge",                why:"Highlights overlooked movies with minimal effort.",               q:"fi", lane:"next" },
+    { id:"A5",  name:"Personalized Spotlight Queue",    why:"Users currently lack trust in algorithmic recommendations.",      q:"bb", lane:"later" },
+    { id:"A6",  name:"Spotlight Digest Email",          why:"Our persona already opens the app regularly.",                    q:"fi", lane:"later" },
+    { id:"A7",  name:"Curator Profiles",                why:"Could build trust but doesn't directly solve discovery friction.", q:"mp", lane:"later" },
+    { id:"A8",  name:"Watch Party (Spotlight)",         why:"Doesn't address the core discovery problem.",                     q:"mp", lane:"cut" },
+    { id:"A9",  name:"Advanced Filter Engine",          why:"Adds complexity and potentially more decision fatigue.",          q:"mp", lane:"cut" },
+    { id:"A10", name:"Offline Download (Spotlight)",    why:"Doesn't help users decide what to watch.",                        q:"mp", lane:"cut" }
+  ];
+
+  const original = FEATURES.map(f => f.lane);
+  const active = new Set(Object.keys(QUADRANTS));
+  const lanes = [...document.querySelectorAll("[data-lane]")];
+
+  function render(){
+    lanes.forEach(l => l.querySelector(".cards").innerHTML = "");
+    FEATURES.forEach(f => {
+      const q = QUADRANTS[f.q];
+      const el = document.createElement("article");
+      el.className = "card" + (active.has(f.q) ? "" : " hidden");
+      el.draggable = true;
+      el.dataset.id = f.id;
+      el.style.setProperty("--q", q.color);
+      el.innerHTML = `
+        <div class="card-top">
+          <div><div class="id">${f.id}</div><div class="name">${f.name}</div></div>
+          <span class="badge">${q.label}</span>
+        </div>
+        <div class="why">${f.why}</div>`;
+      el.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", f.id); el.classList.add("dragging"); });
+      el.addEventListener("dragend", () => el.classList.remove("dragging"));
+      document.querySelector(`[data-lane="${f.lane}"] .cards`).appendChild(el);
+    });
+    lanes.forEach(l => {
+      const visible = l.querySelectorAll(".card:not(.hidden)").length;
+      l.querySelector(".count").textContent = visible;
+      if (!visible) l.querySelector(".cards").insertAdjacentHTML("beforeend", `<div class="empty">Drop a card here</div>`);
+    });
+  }
+
+  lanes.forEach(l => {
+    l.addEventListener("dragover", e => { e.preventDefault(); l.classList.add("over"); });
+    l.addEventListener("dragleave", e => { if (!l.contains(e.relatedTarget)) l.classList.remove("over"); });
+    l.addEventListener("drop", e => {
+      e.preventDefault(); l.classList.remove("over");
+      const f = FEATURES.find(x => x.id === e.dataTransfer.getData("text/plain"));
+      if (f && f.lane !== l.dataset.lane){ f.lane = l.dataset.lane; render(); }
+    });
+  });
+
+  const filters = document.getElementById("filters");
+  Object.entries(QUADRANTS).forEach(([key, q]) => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.innerHTML = `<span class="dot" style="background:${q.color}"></span>${q.label}`;
+    b.onclick = () => { active.has(key) ? active.delete(key) : active.add(key); b.classList.toggle("off"); render(); };
+    filters.appendChild(b);
+  });
+  const reset = document.createElement("button");
+  reset.className = "chip reset"; reset.textContent = "↺ Reset";
+  reset.onclick = () => {
+    FEATURES.forEach((f, i) => f.lane = original[i]);
+    Object.keys(QUADRANTS).forEach(k => active.add(k));
+    filters.querySelectorAll(".chip").forEach(c => c.classList.remove("off"));
+    render();
+  };
+  filters.appendChild(reset);
+
+  document.getElementById("legend").innerHTML = Object.values(QUADRANTS)
+    .map(q => `<div><b style="color:${q.color}">${q.label}</b>${q.desc}</div>`).join("");
+
+  render();
+</script>
+</body>
+</html>
